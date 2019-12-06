@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import json, re, time
+import json, re, time, sys
 from copy import deepcopy
 
 parts = sys.argv[1]
@@ -174,9 +174,9 @@ def js_add_parent(dic, names):
         #Only a single will be a simple product with no parent
     
     else:
-        if rows_that_match['Pricing']['Price'] = "":
-            rows_that_match['Pricing']['Price'] = "33.33"
-            rows_that_match['Stock'] = "0"
+        if rows_that_match[0]['Pricing']['Price'] == "":
+            rows_that_match[0]['Pricing']['Price'] = "33.33"
+            rows_that_match[0]['Stock'] = "0"
         return rows_that_match 
 
 updated = []        
