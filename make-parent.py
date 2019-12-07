@@ -1,5 +1,13 @@
 #!/usr/bin/python3
 
+# Issues:
+
+# Shower Door Seals : P14WS has variations, not by finish, but by glass width, 
+# so 1/4" 3/4" etc so regular variation creation does not work..
+# Solution: IMPORT AS SIMPLE PRODUCTS.
+# Update: Does not work with mixed files where some have finishes used for _par
+# and others are via the size
+
 import json, re, time, sys
 from copy import deepcopy
 
@@ -31,7 +39,11 @@ def uniq_records_for_fucks_sake(z):
     # All stock will be updated before live
     #
     for record in loaded_dicts:
+        # Set all products in stock. During dev
         record['Stock'] = "69"
+        # If not price found, set to visually recognisable price
+        if record['Pricing']['Price'] == "":
+            record['Pricing']['Price'] = "12.34"
     
     series_of_dicts = {}
 
@@ -56,9 +68,29 @@ def js_get_uniq_list_of_names(b):
     # child creation.
     #
     uniq_name_set = set()
-    for dictRow in b: uniq_name_set.add(dictRow['product_name'])
+    
+    for names in b:
+        if names['product_name']:
+            uniq_name_set.add( names['product_name'] )
+            
     return uniq_name_set
 
+def checkForFinishes( rowz ):
+    
+    for row in rowz:
+        # if finish is not empty
+        if row['Finish']:
+            # return with 1
+            return 1
+            
+    # rows have no finishes so make
+    # the more descriptive variation name
+    # the product name
+    
+    for row in rowz:
+        row['product_name'] = row['product_variation']
+    return 0
+    
 def js_add_parent(dic, names):
     # Return LIST variation with additional parent from cloned child with _par added to
     # sku to make unique
@@ -84,6 +116,14 @@ def js_add_parent(dic, names):
         for item in rows_that_match:
             if item['product_name'] == "'D' Pull Handles":
                 return False
+        
+        # rows_that_match is larger than one, but do any products have
+        # have a ['finish'], if not they need to be as simple products
+        # check for finishes using the function and then bail if none found
+        #
+        anyfinishes = checkForFinishes( rows_that_match )
+        if anyfinishes == 0:
+            return rows_that_match
         
         for item in rows_that_match:
             if item['Finish'] == "":
@@ -174,9 +214,10 @@ def js_add_parent(dic, names):
         #Only a single will be a simple product with no parent
     
     else:
-        if rows_that_match[0]['Pricing']['Price'] == "":
-            rows_that_match[0]['Pricing']['Price'] = "33.33"
-            rows_that_match[0]['Stock'] = "0"
+        # print(rows_that_match)
+        # if rows_that_match[0]['Pricing']['Price'] == "":
+            # rows_that_match[0]['Pricing']['Price'] = "33.33"
+            # rows_that_match[0]['Stock'] = "0"
         return rows_that_match 
 
 updated = []        
