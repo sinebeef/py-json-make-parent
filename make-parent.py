@@ -100,15 +100,17 @@ def checkForFinishes( rowz ):
 #   http://www.wpallimport.com/documentation/taxonomies/nested/
 #
 def sortCategoryTree( rtm ):
-    
+
+    cat_dic = { 'Geneva':'Geneva Hinges',
+                'Pinnacle','Pinnacle Hinges',
+                'Cologne','Cologne Hinges'
+                }
+                
     for row in rtm:
-        if row['category'] == 'Hinges':
-            if re.search("Geneva",row['product_name']):
-                row['category'] = row['category'] + ">" + "Geneva Hinges"
-            if re.search("Pinnacle",row['product_name']):
-                row['category'] = row['category'] + ">" + "Pinnacle Hinges"
-            if re.search("Cologne",row['product_name']):
-                row['category'] = row['category'] + ">" + "Cologne Hinges"
+        for k,v in cat_dic.items():
+            if row['category'] == 'Hinges':
+                if re.search( k , row['product_name'] ):
+                    row['category'] = row['category'] + ">" + v
              
     return
  
