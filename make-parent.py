@@ -93,7 +93,25 @@ def checkForFinishes( rowz ):
     for row in rowz:
         row['product_name'] = row['product_variation']
     return 0
+ 
+ 
+#   Check the parent category, then check for product name in title
+#   to be able to generate the "parent-cat>sub-cat>sub-cat" as per
+#   http://www.wpallimport.com/documentation/taxonomies/nested/
+#
+def sortCategoryTree( rtm ):
     
+    for row in rtm:
+        if row['category'] == 'Hinges':
+            if re.search("Geneva",row['product_name']):
+                row['category'] = row['category'] + ">" + "Geneva Hinges"
+            if re.search("Pinnacle",row['product_name']):
+                row['category'] = row['category'] + ">" + "Pinnacle Hinges"
+            if re.search("Cologne",row['product_name']):
+                row['category'] = row['category'] + ">" + "Cologne Hinges"
+             
+    return
+ 
 def js_add_parent(dic, names):
     # Return LIST variation with additional parent from cloned child with _par added to
     # sku to make unique
@@ -115,10 +133,16 @@ def js_add_parent(dic, names):
     #
     if len(rows_that_match) > 1:
     
-        # remove these products because of scrape errors
-        for item in rows_that_match:
-            if item['product_name'] == "'D' Pull Handles":
-                return False
+        # # remove these products because of scrape errors
+        # for item in rows_that_match:
+            # if item['product_name'] == "'D' Pull Handles":
+                # return False
+                
+        # Add category tree for imports..
+        #
+        #sortCategoryTree( rows_that_match )
+        
+        
         
         # rows_that_match is larger than one, but do any products have
         # have a ['finish'], if not they need to be as simple products
