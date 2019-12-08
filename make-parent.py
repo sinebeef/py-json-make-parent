@@ -44,7 +44,10 @@ def uniq_records_for_fucks_sake(z):
         # If not price found, set to visually recognisable price
         if record['Pricing']['Price'] == "":
             record['Pricing']['Price'] = "12.34"
-    
+            
+        if record['product_name'] == "":
+            record['product_name'] = record['product_variation']
+            
     series_of_dicts = {}
 
     for item in loaded_dicts:
@@ -235,7 +238,7 @@ unique_name_set = js_get_uniq_list_of_names(list_of_uniq_dicts)
 for single_name in unique_name_set:
     grouped_products = js_add_parent(list_of_uniq_dicts, single_name)
     if grouped_products:
-        updated += js_add_parent(list_of_uniq_dicts, single_name)
+        updated += grouped_products
   
 # Save the data to a json file which is a list of dicts that wpallimport loves
 #
