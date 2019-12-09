@@ -101,19 +101,32 @@ def checkForFinishes( rowz ):
 #
 def sortCategoryTree( rtm ):
 
-    cat_dic = { 'Geneva':'Geneva Hinges',
-                'Pinnacle','Pinnacle Hinges',
-                'Cologne','Cologne Hinges'
-                }
-                
+    cat_dic =   {   'Hinges'        :{  'Geneva':'Geneva Hinges',
+                                        'Victoria':'Victoria Hinges',
+                                        'Prima':'Prima Hinges',
+                                        'Milano':'Milano Hinges',
+                                        'Monaco':'Monaco Hinges',
+                                        'Madrid':'Madrid Hinges',
+                                        'Grande':'Grande Hinges',
+                                        'Estate':'Estate Hinges',
+                                        'Melbourne':'Melbourne Hinges',
+                                        'Concord':'Concord Hinges',
+                                        'Classique':'Classique Hinges',
+                                        'Cathedral':'Cathedral Hinges',
+                                        'Pinnacle':'Pinnacle Hinges',
+                                        'Cardiff':'Cardiff Hinges',
+                                        'Cologne':'Cologne Hinges'}
+    }
+   
     for row in rtm:
-        for k,v in cat_dic.items():
-            if row['category'] == 'Hinges':
-                if re.search( k , row['product_name'] ):
-                    row['category'] = row['category'] + ">" + v
-             
+    
+        match = next((v for k, v in cat_dic[row['category']].items() if k in row['product_name']), None)
+        if match: 
+            row['category'] = row['category'] + ">" + match
+            row['menu_order'] = '18'
+                
     return
- 
+
 def js_add_parent(dic, names):
     # Return LIST variation with additional parent from cloned child with _par added to
     # sku to make unique
@@ -142,7 +155,7 @@ def js_add_parent(dic, names):
                 
         # Add category tree for imports..
         #
-        #sortCategoryTree( rows_that_match )
+        sortCategoryTree( rows_that_match )
         
         
         
